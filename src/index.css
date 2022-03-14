@@ -36,3 +36,15 @@ code {
   display: flex;
   justify-content: space-between;
 }
+
+.accounts-page__create-user-form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.accounts-page__create-user-form > label {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}

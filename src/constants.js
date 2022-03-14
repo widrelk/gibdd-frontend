@@ -1,7 +1,7 @@
 export const ROLES = {
-	GAI: 1,
-	GIBDD: 2,
-	ADMIN: 3
+	GAI: 0,
+	GIBDD: 1,
+	ADMIN: 2,
 }
 
 export const VEHICLE_CATEGORY = [

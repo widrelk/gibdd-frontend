@@ -20,10 +20,8 @@ const VehiclePage = () => {
 					registrationDate: 2000,
 				}}
 				onSubmit={(values, actions) => {
-					setTimeout(() => {
 					alert(JSON.stringify(values, null, 2));
 					actions.setSubmitting(false);
-					}, 1000);
 				}}
 			>
 				{(props) => (
