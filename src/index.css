@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.driver-page__form-container > label {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.driver-page__form-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  margin-right: 20px;
+}
+
+.vehicle-page__form {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+.vehicle-page__form > label {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
