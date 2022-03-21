@@ -37,13 +37,25 @@ code {
   justify-content: space-between;
 }
 
-.accounts-page__create-user-form {
+.accounts-page__form-container {
   display: flex;
   flex-direction: column;
   width: 400px;
 }
 
-.accounts-page__create-user-form > label {
+.accounts-page__form-container > label {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dictionaries-page__form-container {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.dictionaries-page__form-container > label {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;

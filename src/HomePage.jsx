@@ -40,6 +40,7 @@ const HomePage = () => {
 				<p>Интерфейс администратора</p>
 				<div style={{display: 'flex', flexDirection: 'column'}}>
 					<button onClick={() => navigate('/usersManagement')}>Управление пользователями</button>
+					<button onClick={() => navigate('/dictionaries')}>Управление справочниками</button>
 				</div>
 			</div>
 			}

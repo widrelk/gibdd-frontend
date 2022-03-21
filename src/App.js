@@ -22,39 +22,19 @@ const userData = {
 
 function App() {
   const navigate = useNavigate();
-
   return (
     <div className="App">
-      {window.sessionStorage.getItem('userData') === 'null' &&
-      <div >
-        <p>Система ГИБДД</p>
-        <p>Страница логина</p>
-        <form style={{display: 'flex', flexDirection: 'column'}}>
-          <label>
-            Логин:
-            <input type='text' name='login'/>
-          </label>
-          <label>
-            Пароль:
-            <input type='password' name='password'/>
-          </label>
-        </form>
-        <button onClick={() => {
-          window.sessionStorage.setItem('userData', JSON.stringify(userData));
-          navigate('/homePage');
-        }}
-        >
-          Войти
-        </button>
-      </div>
+      {window.sessionStorage.getItem('userData') === null &&
+      <LoginPage/>
       }
-      {window.sessionStorage.getItem('userData') !== 'null' &&
+      {window.sessionStorage.getItem('userData') !== null &&
         <>
           <div style={{display: 'flex'}}>
             <button onClick={() => navigate('/homePage')}>На главную</button>
             <p style={{marginLeft: '20px'}}>ГИБДД</p>
           </div>
           <Routes>
+            <Route path='/' element={<div/>}/>
             <Route path='homePage' element={<HomePage/>}/>
             <Route path='vehiclePage' element={<VehiclePage/>}/>
             <Route path='driverPage' element={<DriverPage/>}/>
