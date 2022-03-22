@@ -6,6 +6,8 @@ import styles from './index.css'
 import {VEHICLE_CATEGORY} from "./constants";
 
 const VehiclePage = () => {
+	const [dataModel, setDataModel] = useState(null)
+
 	const [modelsList, setModelsList] = useState([]);
 	const [marksList, setMarksList] = useState([]);
 	const [colorsList, setColorsList] = useState([]);
@@ -21,28 +23,29 @@ const VehiclePage = () => {
 		fetch('/api/color')
 			.then(response => response.json())
 			.then(colors => setColorsList(colors));
+		setDataModel({
+			id: 0,
+			weight: 0,
+			maxWeight: 0,
+			creationDate: '',
+			chassisNumber: '',
+			bodyNumber: '',
+			vin: '',
+			registrationDate: '',
+			modelId: 1,
+			markId: 1,
+			colorId: 1,
+			categoryId: 1,
+		});
 	}, []);
 
 	return(
 		<div>
 			<p>Страница транспортного средства</p>
-			<Formik
-				initialValues={{
-					id: 0,
-					weight: 0,
-					maxWeight: 0,
-					creationDate: '',
-					chassisNumber: '',
-					bodyNumber: '',
-					vin: '',
-					registrationDate: '',
-					modelId: 1,
-					markId: 1,
-					colorId: 1,
-					categoryId: 1,
-				}}
+			{dataModel &&
+				<Formik
+				initialValues={dataModel}
 				onSubmit={(values, actions) => {
-					const val = JSON.stringify(values);
 					debugger
 					fetch(`/api/vehicle`, {
 						method: 'POST',
@@ -52,7 +55,6 @@ const VehiclePage = () => {
 						},
 					})
 						.then(response => {
-							debugger
 							if (response.ok) {
 								alert('Элемент добавлен');
 							} else {
@@ -106,7 +108,7 @@ const VehiclePage = () => {
 						<label>
 							Цвет
 							<Field name='colorId' as='select'>
-								{colorsList.map(color => <option value={color.id}>{color.name}</option> )}
+								{colorsList.map(color => <option value={color.id}>{color.name}</option>)}
 							</Field>
 						</label>
 						<label>
@@ -120,7 +122,7 @@ const VehiclePage = () => {
 						<button style={{marginTop: '10px'}} type="submit">Сохранить</button>
 					</Form>
 				)}
-			</Formik>
+			</Formik>}
 		</div>
 	)
 }

@@ -13,12 +13,13 @@ import UsersManagement from "./UsersManagement";
 
 function App() {
   const navigate = useNavigate();
+  const userData = window.sessionStorage.getItem('userData')
   return (
     <div className="App">
-      {window.sessionStorage.getItem('userData') === null &&
+      {userData === null || userData === 'null' &&
       <LoginPage/>
       }
-      {window.sessionStorage.getItem('userData') !== null &&
+      {userData !== null && userData !== 'null' &&
         <>
           <div style={{display: 'flex'}}>
             <button onClick={() => navigate('/homePage')}>На главную</button>
