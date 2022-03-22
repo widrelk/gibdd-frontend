@@ -5,7 +5,7 @@ import {ROLES} from "./constants";
 
 const userData = {
 	name: 'Фамилия имя отчество',
-	role: ROLES.ADMIN,
+	role: ROLES.GAI,
 	uid: 'unique id',
 	userCode: 1,
 	// TODO: коды подразделение и прочего

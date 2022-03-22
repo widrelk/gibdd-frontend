@@ -10,15 +10,6 @@ import DriverPage from "./DriverPage";
 import Dictionaries from "./Dictionaries";
 import Protocol from "./Protocol";
 import UsersManagement from "./UsersManagement";
-import {ROLES} from "./constants";
-
-const userData = {
-  name: 'Фамилия имя отчество',
-  role: ROLES.ADMIN,
-  uid: 'unique id',
-  userCode: 1,
-  // TODO: коды подразделение и прочего
-}
 
 function App() {
   const navigate = useNavigate();

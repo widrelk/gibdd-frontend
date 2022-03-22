@@ -223,11 +223,6 @@ const Dictionaries = () => {
 
 	}, [currentDictionaryIndex])
 
-	useEffect(() => {
-
-
-	}, [dictionaries[currentDictionaryIndex]])
-
 	const handleDeleteItem = () => {
 		fetch(`/api/${dictionaries[currentDictionaryIndex].path}/${data[selectedId - 1].id}`, {
 			method: 'DELETE',

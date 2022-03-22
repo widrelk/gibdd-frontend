@@ -1,27 +1,64 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Field, Form, Formik, FormikProps } from 'formik';
-import DatePicker from 'react-date-picker'
+import DatePickerField from "./components/DatePickerField";
 import styles from './index.css'
 
 import {VEHICLE_CATEGORY} from "./constants";
 
 const VehiclePage = () => {
+	const [modelsList, setModelsList] = useState([]);
+	const [marksList, setMarksList] = useState([]);
+	const [colorsList, setColorsList] = useState([]);
+
+	useEffect(() => {
+		fetch('/api/model')
+			.then(response => response.json())
+			.then(models => setModelsList(models)
+			);
+		fetch('/api/mark')
+			.then(response => response.json())
+			.then(marks => setMarksList(marks));
+		fetch('/api/color')
+			.then(response => response.json())
+			.then(colors => setColorsList(colors));
+	}, []);
+
 	return(
 		<div>
 			<p>Страница транспортного средства</p>
 			<Formik
 				initialValues={{
+					id: 0,
 					weight: 0,
 					maxWeight: 0,
-					vin: '',
+					creationDate: '',
 					chassisNumber: '',
 					bodyNumber: '',
-					productionYear: 2000,
-					registrationDate: 2000,
+					vin: '',
+					registrationDate: '',
+					modelId: 1,
+					markId: 1,
+					colorId: 1,
+					categoryId: 1,
 				}}
 				onSubmit={(values, actions) => {
-					alert(JSON.stringify(values, null, 2));
-					actions.setSubmitting(false);
+					const val = JSON.stringify(values);
+					debugger
+					fetch(`/api/vehicle`, {
+						method: 'POST',
+						body: JSON.stringify(values),
+						headers: {
+							'Content-Type': 'application/json'
+						},
+					})
+						.then(response => {
+							debugger
+							if (response.ok) {
+								alert('Элемент добавлен');
+							} else {
+								alert('Ошибка при добавлении');
+							}
+						})
 				}}
 			>
 				{(props) => (
@@ -33,6 +70,10 @@ const VehiclePage = () => {
 						<label>
 							Технически допустимая масса
 							<Field type="number" name='maxWeight'/>
+						</label>
+						<label>
+							Дата производства
+							<DatePickerField name='creationDate'/>
 						</label>
 						<label>
 							VIN номер:
@@ -47,36 +88,30 @@ const VehiclePage = () => {
 							<Field type='text' name='bodyNumber'/>
 						</label>
 						<label>
-							Год выпуска:
-							<Field type='text' name='productionYear'/>
-						</label>
-						<label>
 							Дата постановки на учёт:
-							<Field type='text' name='registrationDate'/>
+							<DatePickerField type='text' name='registrationDate'/>
 						</label>
 						<label>
 							Производитель
-							<Field name='manufacturer' as='select'>
-								<option value={1}>Говноваз</option>
-								<option value={2}>Бынтли</option>
+							<Field name='markId' as='select'>
+								{marksList.map(mark => <option value={mark.id}>{mark.name}</option>)}
 							</Field>
 						</label>
-						{/*<label>*/}
-						{/*	Модель*/}
-						{/*	<Field name='model' as='select'>*/}
-						{/*		{}*/}
-						{/*	</Field>*/}
-						{/*</label>*/}
+						<label>
+							Модель
+							<Field name='modelId' as='select'>
+								{modelsList.map(model => <option value={model.id}>{model.name}</option>)}
+							</Field>
+						</label>
 						<label>
 							Цвет
-							<Field name='color' as='select'>
-								<option value={1}>Плохой</option>
-								<option value={2}>Отвратительный</option>
+							<Field name='colorId' as='select'>
+								{colorsList.map(color => <option value={color.id}>{color.name}</option> )}
 							</Field>
 						</label>
 						<label>
 							Категория ТС
-							<Field name='category' as='select'>
+							<Field name='categoryId' as='select'>
 								{VEHICLE_CATEGORY.map(cat => (
 									<option value={cat.id}>{cat.name}</option>
 								))}
