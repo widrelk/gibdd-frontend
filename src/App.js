@@ -10,6 +10,8 @@ import DriverPage from "./DriverPage";
 import Dictionaries from "./Dictionaries";
 import Protocol from "./Protocol";
 import UsersManagement from "./UsersManagement";
+import VehicleList from "./VehicleList";
+import CitizensList from "./CitizensList";
 
 function App() {
   const navigate = useNavigate();
@@ -29,7 +31,9 @@ function App() {
             <Route path='/' element={<div/>}/>
             <Route path='homePage' element={<HomePage/>}/>
             <Route path='vehiclePage' element={<VehiclePage/>}/>
+            <Route path='vehicleList' element={<VehicleList/>}/>
             <Route path='driverPage' element={<DriverPage/>}/>
+            <Route path='citizensList' element={<CitizensList/>}/>
             <Route path='dictionaries' element={<Dictionaries/>}/>
             <Route path='protocol' element={<Protocol/>}/>
             <Route path='usersManagement' element={<UsersManagement/>}/>

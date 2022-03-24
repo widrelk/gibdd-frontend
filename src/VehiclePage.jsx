@@ -4,8 +4,10 @@ import DatePickerField from "./components/DatePickerField";
 import styles from './index.css'
 
 import {VEHICLE_CATEGORY} from "./constants";
+import {useSearchParams} from "react-router-dom";
 
 const VehiclePage = () => {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [dataModel, setDataModel] = useState(null)
 
 	const [modelsList, setModelsList] = useState([]);
@@ -23,45 +25,72 @@ const VehiclePage = () => {
 		fetch('/api/color')
 			.then(response => response.json())
 			.then(colors => setColorsList(colors));
-		setDataModel({
-			id: 0,
-			weight: 0,
-			maxWeight: 0,
-			creationDate: '',
-			chassisNumber: '',
-			bodyNumber: '',
-			vin: '',
-			registrationDate: '',
-			modelId: 1,
-			markId: 1,
-			colorId: 1,
-			categoryId: 1,
-		});
+		let vehicleId = searchParams.get('__vehicle_id');
+		if (vehicleId) {
+			fetch(`/api/Vehicle/${vehicleId}`)
+				.then(response => response.json())
+				.then(data => setDataModel(data));
+		} else {
+			setDataModel({
+				id: 0,
+				weight: 0,
+				maxWeight: 0,
+				creationDate: '',
+				chassisNumber: '',
+				bodyNumber: '',
+				vin: '',
+				registrationDate: '',
+				modelId: 1,
+				markId: 1,
+				colorId: 1,
+				categoryId: 1,
+			});
+		}
 	}, []);
 
 	return(
 		<div>
-			<p>Страница транспортного средства</p>
+			<p>Страница {dataModel?.id === 0 ? 'создания' : 'редактирования'} транспортного средства</p>
 			{dataModel &&
 				<Formik
 				initialValues={dataModel}
 				onSubmit={(values, actions) => {
-					debugger
-					fetch(`/api/vehicle`, {
-						method: 'POST',
-						body: JSON.stringify(values),
-						headers: {
-							'Content-Type': 'application/json'
-						},
-					})
-						.then(response => {
-							if (response.ok) {
-								alert('Элемент добавлен');
-							} else {
-								alert('Ошибка при добавлении');
-							}
+					if (dataModel.id === 0) {
+						debugger
+						fetch('/api/vehicle', {
+							method: 'POST',
+							body: JSON.stringify(values),
+							headers: {
+								'Content-Type': 'application/json'
+							},
 						})
-				}}
+							.then(response => {
+								if (response.ok) {
+									alert('Элемент добавлен');
+								} else {
+									alert('Ошибка при добавлении');
+								}
+							})
+					} else {
+						debugger
+						fetch('/api/vehicle', {
+							method: 'PUT',
+							body: JSON.stringify(values),
+							headers: {
+								'Content-Type': 'application/json'
+							},
+						})
+							.then(response => {
+								if (response.ok) {
+									alert('Элемент обновлён');
+								} else {
+									alert('Ошибка при обновлении');
+								}
+							})
+					}
+				}
+				}
+
 			>
 				{(props) => (
 					<Form className='vehicle-page__form'>

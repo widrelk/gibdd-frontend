@@ -22,8 +22,8 @@ const HomePage = () => {
 				<div style={{display: 'flex', flexDirection: 'column'}}>
 					<button onClick={() => navigate('/vehiclePage')}>Зарегистрировать транспортное средство</button>
 					<button onClick={() => navigate('/driverPage')}>Зарегистрировать водителя</button>
-					<button onClick={() => navigate('/vehiclePage')}>Изменение данных о транспортном средстве</button>
-					<button onClick={() => navigate('/driverPage')}>Изменение данных о водителе</button>
+					<button onClick={() => navigate('/vehicleList')}>Изменение данных о транспортном средстве</button>
+					<button onClick={() => navigate('/citizensList')}>Изменение данных о водителе</button>
 				</div>
 			</div>
 			}

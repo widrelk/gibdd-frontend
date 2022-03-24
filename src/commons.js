@@ -1,8 +1,6 @@
 import React from "react";
 import {useTable} from "react-table";
 
-// TODO: не работает border collapse
-
 export const Table = ({ columns, data }) => {
 	// Use the state and functions returned from useTable to build your UI
 	const {
@@ -17,7 +15,7 @@ export const Table = ({ columns, data }) => {
 	})
 	// Render the UI for your table
 	return (
-		<table {...getTableProps()}>
+		<table {...getTableProps()} style={{borderCollapse: 'collapse'}}>
 			<thead>
 			{headerGroups.map(headerGroup => (
 				<tr {...headerGroup.getHeaderGroupProps()}>
@@ -27,7 +25,7 @@ export const Table = ({ columns, data }) => {
 				</tr>
 			))}
 			</thead>
-			<tbody {...getTableBodyProps()} style={{borderCollapse: 'collapse'}}>
+			<tbody {...getTableBodyProps()}>
 			{rows.map((row, i) => {
 				prepareRow(row)
 				return (
