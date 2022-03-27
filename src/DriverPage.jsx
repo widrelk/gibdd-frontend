@@ -21,10 +21,14 @@ const DriverPage = () => {
 			.then(addresses => setAddressDictionary(addresses))
 
 		let citizenId = searchParams.get('__citizen_id');
+
 		if (citizenId) {
-			fetch(`/api/SuperUser/${citizenId}`)
+			fetch(`/api/SuperUser/id:int?id=${citizenId}`)
 				.then(response => response.json())
-				.then(data => setDataModel(data));
+				.then(data => {
+					debugger
+					setDataModel(data)
+				});
 		} else {
 			setDataModel({
 				"citizen": {
@@ -105,7 +109,7 @@ const DriverPage = () => {
 
 									<label>
 										Название места работы
-										<Field type='text' name='citizen.workplaceName'/>
+										<Field type='text' name='citizen.workPlaceName'/>
 									</label>
 									<label>
 										Название должности
@@ -120,19 +124,19 @@ const DriverPage = () => {
 
 									<label>
 										Адрес проживания
-										<Field name='livingAddress' as='select'>
+										<Field name='citizen.livingAddress' as='select'>
 											{makeAddresses()}
 										</Field>
 									</label>
 									<label>
 										Адрес регистрации
-										<Field name='registrationAddress' as='select'>
+										<Field name='citizen.registrationAddress' as='select'>
 											{makeAddresses()}
 										</Field>
 									</label>
 									<label>
 										Адрес места работы
-										<Field name='workAddress' as='select'>
+										<Field name='citizen.workAddress' as='select'>
 											{makeAddresses()}
 										</Field>
 									</label>
@@ -150,7 +154,7 @@ const DriverPage = () => {
 									</label>
 									<label>
 										Дата выдачи
-										<DatePickerField type='text' name='passport.issuedDate'/>
+										<DatePickerField type='text' name='passport.issueDate'/>
 									</label>
 									<label>
 										Кем выдан
@@ -162,26 +166,26 @@ const DriverPage = () => {
 										<p>Данные водительского удостоверения</p>
 										<label>
 											Серия
-											<Field type='text' name='license.series'/>
+											<Field type='text' name='driverLicense.series'/>
 										</label>
 										<label>
 											Номер
-											<Field type='text' name='license.number'/>
+											<Field type='text' name='driverLicense.number'/>
 										</label>
 										<label>
 											Дата выдачи
-											<DatePickerField name='license.emissDate'/>
+											<DatePickerField name='driverLicense.startDate'/>
 										</label>
 										<label>
 											Дата окончания действия
-											<Field type='text' name='license.expDate'/>
+											<Field type='text' name='driverLicense.endDate'/>
 										</label>
 										<div role='group'>
 											Разрешённые группы:
 											{VEHICLE_CATEGORY.map(cat => (
 												<label>
 													{cat.name}
-													<Field type='checkbox' name='license.availableGroups' value={cat.id}/>
+													<Field type='checkbox' name='driverLicense.availableGroups' value={cat.id}/>
 												</label>
 											))}
 										</div>

@@ -4,11 +4,11 @@ import {useNavigate} from "react-router";
 import {ROLES} from "./constants";
 
 const userData = {
-	name: 'Фамилия имя отчество',
-	role: ROLES.GIBDD,
+	name: 'Прохоров Иван Дмитриевич',
+	role: ROLES.ADMIN,
 	uid: 'unique id',
 	userCode: 1,
-	id: 1,
+	id: 2,
 	// TODO: коды подразделение и прочего
 }
 

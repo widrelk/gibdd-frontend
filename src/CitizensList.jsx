@@ -11,7 +11,8 @@ const CitizensList = () => {
 	const [tableData, setTableData] = useState([])
 
 	const openCitizen = (citizenId) => {
-
+		debugger
+		navigate(`/driverPage?__citizen_id=${citizenId}`)
 	}
 
 	const columns = [
@@ -69,8 +70,8 @@ const CitizensList = () => {
 		{
 			Header: '',
 			accessor: 'custom',
-			Cell: ({row}) =>
-				<button onClick={() => openCitizen(row.original.id)}>Ред.</button>
+			Cell: ({row}) => <button onClick={() => openCitizen(row.original.citizen.id)}>Ред.</button>
+
 		}
 	]
 

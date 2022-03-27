@@ -49,6 +49,7 @@ const ProtocolPage = () => {
 	const [vehiclesDictionary, setVehicleDictionary] = useState([]);
 	const [citizenDictionary, setCitizenDictionary] = useState([]);
 	const [roleDictionary, setRoleDictionary] = useState([]);
+	const [markDictionary, setMarkDictionary] = useState([]);
 
 	const [creationFlag, setCreationFlag] = useState(false);
 	const formRef = useRef(null);
@@ -61,7 +62,9 @@ const ProtocolPage = () => {
 		if (protocolId) {
 			fetch(`/api/SuperProtocol/${protocolId}`)
 				.then(response => response.json())
-				.then(data => setDataModel(data));
+				.then(data => {
+					setDataModel(data)
+				});
 		} else {
 			setCreationFlag(true);
 			fetch(`/api/Employee/${userData.current.id}`)
@@ -94,20 +97,19 @@ const ProtocolPage = () => {
 						"creationPalceAddressId": 0,
 					});
 				})
-
-			fetch('/api/SuperVehicle')
-				.then(response => response.json())
-				.then(vehicles => setVehicleDictionary(vehicles))
-			fetch('/api/SuperUser')
-				.then(response => response.json())
-				.then(citizens => setCitizenDictionary(citizens));
-			fetch('/api/Address')
-				.then(response => response.json())
-				.then(addresses => setAddressDictionary(addresses))
-			fetch('/api/RoleInRoadAccident')
-				.then(response => response.json())
-				.then(roles => setRoleDictionary(roles))
 		}
+		fetch('/api/SuperVehicle')
+			.then(response => response.json())
+			.then(vehicles => setVehicleDictionary(vehicles))
+		fetch('/api/SuperUser')
+			.then(response => response.json())
+			.then(citizens => setCitizenDictionary(citizens));
+		fetch('/api/Address')
+			.then(response => response.json())
+			.then(addresses => setAddressDictionary(addresses))
+		fetch('/api/RoleInRoadAccident')
+			.then(response => response.json())
+			.then(roles => setRoleDictionary(roles))
 	}, [])
 
 	const addCitizen = (citizenIndex) => {
@@ -115,6 +117,7 @@ const ProtocolPage = () => {
 		if (citizenIndex !== -1) {
 			modelCopy.participants.push({
 				superUser: citizenDictionary[citizenIndex],
+				roleInRoadAccident: roleDictionary[0],
 				roleInRoadAccidentId: 1,
 				citizenId: 0,
 				protocolId: 0,
@@ -216,10 +219,10 @@ const ProtocolPage = () => {
 			Header: 'Регистрационный номер',
 			accessor: 'number',
 		},
-		{
-			Header: 'Марка',
-			accessor: 'markName',
-		},
+		// {
+		// 	Header: 'Марка',
+		// 	accessor: 'markName',
+		// },
 		{
 			Header: 'Модель',
 			accessor: 'modelName',
@@ -306,6 +309,10 @@ const ProtocolPage = () => {
 					initialValues={dataModel}
 					innerRef={formRef}
 					onSubmit={(values, actions) => {
+						for (let i = 0; i < values.participants.length; i++){
+							debugger
+							values.participants[i].roleInRoadAccident = roleDictionary.find(elem => elem.id === values.participants[i].roleInRoadAccidentId)
+						}
 						debugger
 						fetch('/api/SuperProtocol', {
 							method: 'POST',
@@ -326,150 +333,159 @@ const ProtocolPage = () => {
 					>
 					{(props) => (
 						<Form className='protocol-page__form-container'>
-							<label>
-								Составил сотрудник: {`${formRef.current?.values?.creator?.firstName} ${formRef.current?.values?.creator?.lastName} ${formRef.current?.values?.creator?.patronymic}`}
-							</label>
-							<label>
-								Дата составления протокола
-								<DatePickerField name='creationDate'/>
-							</label>
 
-							<p>Место происшествия</p>
-							{makeAddressFields('roadAccidentAddress', loadAddressCallback, creationFlag)}
+								<label>
+									Составил сотрудник: {`${formRef.current?.values?.creator?.firstName} ${formRef.current?.values?.creator?.lastName} ${formRef.current?.values?.creator?.patronymic}`}
+								</label>
+								<label>
+									Дата составления протокола
+									<DatePickerField name='creationDate'/>
+								</label>
 
-							<p>Место составления протокола</p>
-							{makeAddressFields('creationPalceAddress', loadAddressCallback, creationFlag)}
+								<p>Место происшествия</p>
+								{makeAddressFields('roadAccidentAddress', loadAddressCallback, creationFlag)}
 
-							<p>Участники происшествия</p>
-							{formRef.current?.values?.participants?.map((participant, index) => (
-								<div style={{marginTop: '30px', padding: '5px', border: '1px solid black'}}>
-									<p style={{textAlign: 'left'}}>Участник {index + 1}</p>
+								<p>Место составления протокола</p>
+								{makeAddressFields('creationPalceAddress', loadAddressCallback, creationFlag)}
 
-									<label>
-										Фамилия
-										<Field type="text" name={`participants[${index}].superUser.citizen.firstName`}/>
-									</label>
-									<label>
-										Имя
-										<Field type="text" name={`participants[${index}].superUser.citizen.lastName`}/>
-									</label>
-									<label>
-										Отчество
-										<Field type="text" name={`participants[${index}].superUser.citizen.patronymic`}/>
-									</label>
-									<label>
-										Пол
-										<Field name={`participants[${index}].superUser.citizen.sexId`} as='select'>
-											<option value={1}>М</option>
-											<option value={2}>Ж</option>
-										</Field>
-									</label>
-									<label style={{marginTop: '30px'}}>
-										Место проживания
-										{makeAddressFields(`participants[${index}].superUser.citizen.residentialAddress`, loadAddressCallback, creationFlag)}
-									</label>
-									<label style={{marginTop: '30px'}}>
-										Место регистрации
-										{makeAddressFields(`participants[${index}].superUser.citizen.registrationAddress`, loadAddressCallback, creationFlag)}
-									</label>
 
-									<label>
-										Роль в ДТП
-										<Field name={`participants[${index}].superUser.roleInAccidentId`} as='select'>
-											{roleDictionary.map(role => <option value={role.id}>{role.roleName}</option> )}
-										</Field>
-									</label>
-
-									<label style={{marginTop: '30px'}}>
-										Место работы
-										<Field type="text" name={`participants[${index}].superUser.citizen.workPlaceName`}/>
-									</label>
-									<label>
-										Адрес места работы
-										{makeAddressFields(`participants[${index}].superUser.citizen.workPlaceAddress`, loadAddressCallback)}
-									</label>
-									<label>
-										Должность
-										<Field type="text" name={`participants[${index}].superUser.citizen.positionName`}/>
-									</label>
-
-									<label style={{marginTop: '30px'}}>
-										Телефон
-										<Field type="phone" name={`participants[${index}].superUser.citizen.phone`}/>
-									</label>
-
-									<label>
-										Показания
-										<Field type="textarea" name={`participants[${index}].testimony`}/>
-									</label>
-
-									<p style={{marginTop: '30px'}}>Паспортные данные</p>
-									<label>
-										Серия
-										<Field type='text' name={`participants[${index}].superUser.passport.series`}/>
-									</label>
-									<label>
-										Номер
-										<Field type='text' name={`participants[${index}].superUser.passport.number`}/>
-									</label>
-									<label>
-										Дата выдачи
-										<DatePickerField name={`participants[${index}].superUser.passport.issueDate`}/>
-									</label>
-									<label>
-										Кем выдан
-										<Field type='text' name={`participants[${index}].superUser.passport.issuedBy`}/>
-									</label>
-
-									<p style={{marginTop: '30px'}}>Данные водительского удостоверения (при наличии)</p>
-									<label>
-										Серия
-										<Field type='text' name={`participants[${index}].superUser.driverLicense.series`}/>
-									</label>
-									<label>
-										Номер
-										<Field type='text' name={`participants[${index}].superUser.driverLicense.number`}/>
-									</label>
-									<label>
-										Дата выдачи
-										<DatePickerField type='text' name={`participants[${index}].superUser.driverLicense.startDate`}/>
-									</label>
-									<label>
-										Дата окончания действия
-										<Field type='text' name={`participants[${index}].superUser.driverLicense.endDate`}/>
-									</label>
-								</div>
-							))}
-							{creationFlag && <button onClick={() => setShowCitizenModal(true)} type='button'>Добавить участника происшествия</button>}
-
-							<p>Участвующие транспортные средства</p>
-							{
-								formRef.current?.values?.protocolAppendices?.map((info, index) => (
+								<p>Участники происшествия</p>
+							<fieldset disabled={!creationFlag}>
+								{formRef.current?.values?.participants?.map((participant, index) => (
 									<div style={{marginTop: '30px', padding: '5px', border: '1px solid black'}}>
-										<p style={{textAlign: 'left'}}>Транспортное средство {index + 1}</p>
+										<p style={{textAlign: 'left'}}>Участник {index + 1}</p>
 
 										<label>
-											Регистрационный номер
-											<Field type='text' name={`protocolAppendices[${index}].vehicle.number`} readOnly/>
+											Фамилия
+											<Field type="text" name={`participants[${index}].superUser.citizen.firstName`}/>
 										</label>
 										<label>
-											Марка
-											<Field type='text' name={`protocolAppendices[${index}].vehicle.markName`} readOnly/>
+											Имя
+											<Field type="text" name={`participants[${index}].superUser.citizen.lastName`}/>
 										</label>
 										<label>
-											Модель
-											<Field type='text' name={`protocolAppendices[${index}].vehicle.modelName`} readOnly/>
+											Отчество
+											<Field type="text" name={`participants[${index}].superUser.citizen.patronymic`}/>
 										</label>
 										<label>
-											Описание повреждений
-											<Field type='text' name={`protocolAppendices[${index}].damageDescription`}/>
+											Пол
+											<Field name={`participants[${index}].superUser.citizen.sexId`} as='select'>
+												<option value={1}>М</option>
+												<option value={2}>Ж</option>
+											</Field>
+										</label>
+										<label style={{marginTop: '30px'}}>
+											Место проживания
+											{makeAddressFields(`participants[${index}].superUser.citizen.residentialAddress`, loadAddressCallback, creationFlag)}
+										</label>
+										<label style={{marginTop: '30px'}}>
+											Место регистрации
+											{makeAddressFields(`participants[${index}].superUser.citizen.registrationAddress`, loadAddressCallback, creationFlag)}
+										</label>
+
+										<label>
+											Роль в ДТП
+											<Field name={`participants[${index}].roleInRoadAccidentId`} as='select'>
+												{roleDictionary.map(role => <option value={role.id}>{role.roleName}</option>)}
+											</Field>
+										</label>
+
+										<label style={{marginTop: '30px'}}>
+											Место работы
+											<Field type="text" name={`participants[${index}].superUser.citizen.workPlaceName`}/>
+										</label>
+										<label>
+											Адрес места работы
+											{makeAddressFields(`participants[${index}].superUser.citizen.workPlaceAddress`, loadAddressCallback)}
+										</label>
+										<label>
+											Должность
+											<Field type="text" name={`participants[${index}].superUser.citizen.positionName`}/>
+										</label>
+
+										<label style={{marginTop: '30px'}}>
+											Телефон
+											<Field type="phone" name={`participants[${index}].superUser.citizen.phone`}/>
+										</label>
+
+										<label>
+											Показания
+											<Field type="textarea" name={`participants[${index}].testimony`}/>
+										</label>
+
+										<p style={{marginTop: '30px'}}>Паспортные данные</p>
+										<label>
+											Серия
+											<Field type='text' name={`participants[${index}].superUser.passport.series`}/>
+										</label>
+										<label>
+											Номер
+											<Field type='text' name={`participants[${index}].superUser.passport.number`}/>
+										</label>
+										<label>
+											Дата выдачи
+											<DatePickerField name={`participants[${index}].superUser.passport.issueDate`}/>
+										</label>
+										<label>
+											Кем выдан
+											<Field type='text' name={`participants[${index}].superUser.passport.issuedBy`}/>
+										</label>
+
+										<p style={{marginTop: '30px'}}>Данные водительского удостоверения (при наличии)</p>
+										<label>
+											Серия
+											<Field type='text' name={`participants[${index}].superUser.driverLicense.series`}/>
+										</label>
+										<label>
+											Номер
+											<Field type='text' name={`participants[${index}].superUser.driverLicense.number`}/>
+										</label>
+										<label>
+											Дата выдачи
+											<DatePickerField type='text' name={`participants[${index}].superUser.driverLicense.startDate`}/>
+										</label>
+										<label>
+											Дата окончания действия
+											<Field type='text' name={`participants[${index}].superUser.driverLicense.endDate`}/>
 										</label>
 									</div>
-								))
-							}
-							{creationFlag && <button onClick={() => setShowVehicleModal(true)} type='button'>Добавить ТС</button>}
+								))}
+							</fieldset>
+								{creationFlag && <button onClick={() => setShowCitizenModal(true)} type='button'>Добавить участника происшествия</button>}
 
-							{creationFlag && <button type='submit'>Сохранить протокол</button>}
+									<p>Участвующие транспортные средства</p>
+									{
+										formRef.current?.values?.protocolAppendices?.map((info, index) => (
+											<div style={{marginTop: '30px', padding: '5px', border: '1px solid black'}}>
+												<p style={{textAlign: 'left'}}>Транспортное средство {index + 1}</p>
+
+												<label>
+													Регистрационный номер
+													<Field type='text' name={`protocolAppendices[${index}].vehicle.number`} readOnly/>
+												</label>
+												{/*TODO: как-то сделать отображение марки*/}
+												{/*<label>*/}
+												{/*	Марка*/}
+												{/*	<Field type='text' name={`protocolAppendices[${index}].vehicle.markName`} readOnly/>*/}
+												{/*</label>*/}
+												<label>
+													Категория
+													<Field type='text' name={`protocolAppendices[${index}].vehicle.categoryName`}/>
+												</label>
+												<label>
+													Модель
+													<Field type='text' name={`protocolAppendices[${index}].vehicle.modelName`} readOnly/>
+												</label>
+												<label>
+													Описание повреждений
+													<Field type='text' name={`protocolAppendices[${index}].damageDescription`}/>
+												</label>
+											</div>
+										))
+									}
+								{creationFlag && <button onClick={() => setShowVehicleModal(true)} type='button'>Добавить ТС</button>}
+
+								{creationFlag && <button type='submit'>Сохранить протокол</button>}
 						</Form>
 					)}
 				</Formik>
@@ -510,6 +526,7 @@ const ProtocolPage = () => {
 				<button onClick={() => {
 					const modelCopy = JSON.parse(JSON.stringify(formRef.current.values));
 					modelCopy[addressAccessorRef.current] = addressDictionary[addressFieldValue];
+
 					formRef.current.setValues(modelCopy);
 					setShowAddressModal(false);
 				}}>Выбрать</button>

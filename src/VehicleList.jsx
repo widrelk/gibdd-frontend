@@ -74,7 +74,7 @@ const VehicleList = () => {
 	}, [])
 
 	return(
-		<div style={{overflowX: 'hidden'}}>
+		<div style={{overflowX: 'scroll',}}>
 			Зарегистрированные транспортные средства
 			<Table columns={columns} data={tableData}/>
 		</div>

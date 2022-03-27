@@ -27,14 +27,14 @@ code {
 .driver-page__form-container {
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 70%;
   margin-right: 20px;
 }
 
 .vehicle-page__form {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 80%;
 }
 
 .vehicle-page__form > label {

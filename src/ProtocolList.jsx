@@ -49,7 +49,7 @@ const ProtocolList = () => {
 				let allAppendices = ''
 				cell.value.forEach(appendice => {
 					const vehicle = appendice.vehicle;
-					allAppendices += `${vehicle.markName} ${vehicle.modelName} / ${vehicle.colorName}; `
+					allAppendices += `${vehicle.modelName} / ${vehicle.colorName}; `
 				})
 				return allAppendices
 			},
