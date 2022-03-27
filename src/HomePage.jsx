@@ -24,6 +24,7 @@ const HomePage = () => {
 					<button onClick={() => navigate('/driverPage')}>Зарегистрировать водителя</button>
 					<button onClick={() => navigate('/vehicleList')}>Изменение данных о транспортном средстве</button>
 					<button onClick={() => navigate('/citizensList')}>Изменение данных о водителе</button>
+					<button onClick={() => alert('Просмотр протоколов')}>Просмотр протоколов</button>
 				</div>
 			</div>
 			}
@@ -31,7 +32,7 @@ const HomePage = () => {
 			<div>
 				<p>Интерфейс сотрудника ГИБДД</p>
 				<div style={{display: 'flex', flexDirection: 'column'}}>
-					<button>Создать протокол о ДТП</button>
+					<button onClick={() => navigate('/protocol')}>Создать протокол о ДТП</button>
 				</div>
 			</div>
 			}

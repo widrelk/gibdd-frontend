@@ -69,3 +69,13 @@ code {
   display: flex;
   justify-content: space-between;
 }
+
+.protocol-page__form-container label {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+}
+.protocol-page__form-container input, select{
+  min-width: 250px;
+}

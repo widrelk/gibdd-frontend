@@ -65,7 +65,6 @@ const VehicleList = () => {
 			Cell: ({row}) =>
 				<button onClick={() => openVehicle(row.original.id)}>Ред.</button>
 		}
-
 	]
 
 	useEffect(() => {

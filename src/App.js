@@ -8,14 +8,14 @@ import HomePage from "./HomePage";
 import VehiclePage from "./VehiclePage";
 import DriverPage from "./DriverPage";
 import Dictionaries from "./Dictionaries";
-import Protocol from "./Protocol";
+import ProtocolPage from "./ProtocolPage";
 import UsersManagement from "./UsersManagement";
 import VehicleList from "./VehicleList";
 import CitizensList from "./CitizensList";
 
 function App() {
   const navigate = useNavigate();
-  const userData = window.sessionStorage.getItem('userData')
+  const userData = JSON.parse(window.sessionStorage.getItem('userData'))
   return (
     <div className="App">
       {userData === null || userData === 'null' &&
@@ -26,6 +26,7 @@ function App() {
           <div style={{display: 'flex'}}>
             <button onClick={() => navigate('/homePage')}>На главную</button>
             <p style={{marginLeft: '20px'}}>ГИБДД</p>
+            <p style={{marginLeft: '20px'}}>Сотрудник: {userData.name}</p>
           </div>
           <Routes>
             <Route path='/' element={<div/>}/>
@@ -35,7 +36,7 @@ function App() {
             <Route path='driverPage' element={<DriverPage/>}/>
             <Route path='citizensList' element={<CitizensList/>}/>
             <Route path='dictionaries' element={<Dictionaries/>}/>
-            <Route path='protocol' element={<Protocol/>}/>
+            <Route path='protocol' element={<ProtocolPage/>}/>
             <Route path='usersManagement' element={<UsersManagement/>}/>
           </Routes>
         </>

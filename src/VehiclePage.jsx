@@ -8,7 +8,7 @@ import {useSearchParams} from "react-router-dom";
 
 const VehiclePage = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [dataModel, setDataModel] = useState(null)
+	const [dataModel, setDataModel] = useState(null);
 
 	const [modelsList, setModelsList] = useState([]);
 	const [marksList, setMarksList] = useState([]);
