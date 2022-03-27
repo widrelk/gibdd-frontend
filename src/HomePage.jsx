@@ -24,7 +24,7 @@ const HomePage = () => {
 					<button onClick={() => navigate('/driverPage')}>Зарегистрировать водителя</button>
 					<button onClick={() => navigate('/vehicleList')}>Изменение данных о транспортном средстве</button>
 					<button onClick={() => navigate('/citizensList')}>Изменение данных о водителе</button>
-					<button onClick={() => alert('Просмотр протоколов')}>Просмотр протоколов</button>
+					<button onClick={() => navigate('/protocolList')}>Просмотр протоколов</button>
 				</div>
 			</div>
 			}

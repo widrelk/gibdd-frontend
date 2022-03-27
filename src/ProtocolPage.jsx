@@ -5,7 +5,6 @@ import Modal from 'react-modal';
 
 import styles from './index.css';
 import DatePickerField from "./components/DatePickerField";
-import AddressField from "./components/AddressField";
 import {Table} from "./commons";
 
 const makeAddress = (addr) => `${addr.countryName} ${addr.regionName} ${addr.cityName} ${addr.streetName} ${addr.houseNumber}`;
@@ -38,7 +37,7 @@ const makeAddressFields = (accessor, openModalCallback, editable) => {
 }
 
 const ProtocolPage = () => {
-	const userData = useRef(() => JSON.parse(window.sessionStorage.getItem('userData')))
+	const userData = useRef(JSON.parse(window.sessionStorage.getItem('userData')))
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [dataModel, setDataModel] = useState(null);
 
@@ -49,6 +48,7 @@ const ProtocolPage = () => {
 	const [addressDictionary, setAddressDictionary] = useState([]);
 	const [vehiclesDictionary, setVehicleDictionary] = useState([]);
 	const [citizenDictionary, setCitizenDictionary] = useState([]);
+	const [roleDictionary, setRoleDictionary] = useState([]);
 
 	const [creationFlag, setCreationFlag] = useState(false);
 	const formRef = useRef(null);
@@ -64,30 +64,37 @@ const ProtocolPage = () => {
 				.then(data => setDataModel(data));
 		} else {
 			setCreationFlag(true);
-			setDataModel({
-				"roadAccidentAddress": {
-					"id": 0,
-					"countryName": "",
-					"regionName": "",
-					"cityName": "",
-					"streetName": "",
-					"houseNumber": 0,
-				},
-				"creationPalceAddress": {
-					"id": 0,
-					"countryName": "",
-					"regionName": "",
-					"cityName": "",
-					"streetName": "",
-					"houseNumber": 0
-				},
-				"participants": [],
-				"protocolAppendices": [],
-				"id": 0,
-				"creationDate": "",
-				"roadAccidentAddressId": 0,
-				"creationPalceAddressId": 0,
-			});
+			fetch(`/api/Employee/${userData.current.id}`)
+				.then(response => response.json())
+				.then(empl => {
+					setDataModel({
+						"roadAccidentAddress": {
+							"id": 0,
+							"countryName": "",
+							"regionName": "",
+							"cityName": "",
+							"streetName": "",
+							"houseNumber": 0,
+						},
+						"creationPalceAddress": {
+							"id": 0,
+							"countryName": "",
+							"regionName": "",
+							"cityName": "",
+							"streetName": "",
+							"houseNumber": 0
+						},
+						creator: empl,
+						employeeId: empl.id,
+						"participants": [],
+						"protocolAppendices": [],
+						"id": 0,
+						"creationDate": "",
+						"roadAccidentAddressId": 0,
+						"creationPalceAddressId": 0,
+					});
+				})
+
 			fetch('/api/SuperVehicle')
 				.then(response => response.json())
 				.then(vehicles => setVehicleDictionary(vehicles))
@@ -97,6 +104,9 @@ const ProtocolPage = () => {
 			fetch('/api/Address')
 				.then(response => response.json())
 				.then(addresses => setAddressDictionary(addresses))
+			fetch('/api/RoleInRoadAccident')
+				.then(response => response.json())
+				.then(roles => setRoleDictionary(roles))
 		}
 	}, [])
 
@@ -109,7 +119,6 @@ const ProtocolPage = () => {
 				citizenId: 0,
 				protocolId: 0,
 				testimony: '',
-
 			})
 		} else {
 			modelCopy.participants.push({
@@ -202,6 +211,10 @@ const ProtocolPage = () => {
 			Header: '№',
 			Cell: ({row}) => row.index + 1,
 			accessor: 'id'
+		},
+		{
+			Header: 'Регистрационный номер',
+			accessor: 'number',
 		},
 		{
 			Header: 'Марка',
@@ -305,14 +318,17 @@ const ProtocolPage = () => {
 								if (response.ok) {
 									alert('Элемент добавлен');
 								} else {
+									console.log(response.body.json())
 									alert('Ошибка при добавлении');
 								}
 							})
-						console.log(values);
 					}}
 					>
 					{(props) => (
 						<Form className='protocol-page__form-container'>
+							<label>
+								Составил сотрудник: {`${formRef.current?.values?.creator?.firstName} ${formRef.current?.values?.creator?.lastName} ${formRef.current?.values?.creator?.patronymic}`}
+							</label>
 							<label>
 								Дата составления протокола
 								<DatePickerField name='creationDate'/>
@@ -355,6 +371,13 @@ const ProtocolPage = () => {
 									<label style={{marginTop: '30px'}}>
 										Место регистрации
 										{makeAddressFields(`participants[${index}].superUser.citizen.registrationAddress`, loadAddressCallback, creationFlag)}
+									</label>
+
+									<label>
+										Роль в ДТП
+										<Field name={`participants[${index}].superUser.roleInAccidentId`} as='select'>
+											{roleDictionary.map(role => <option value={role.id}>{role.roleName}</option> )}
+										</Field>
 									</label>
 
 									<label style={{marginTop: '30px'}}>
@@ -425,7 +448,10 @@ const ProtocolPage = () => {
 									<div style={{marginTop: '30px', padding: '5px', border: '1px solid black'}}>
 										<p style={{textAlign: 'left'}}>Транспортное средство {index + 1}</p>
 
-										// TODO: Номер машины
+										<label>
+											Регистрационный номер
+											<Field type='text' name={`protocolAppendices[${index}].vehicle.number`} readOnly/>
+										</label>
 										<label>
 											Марка
 											<Field type='text' name={`protocolAppendices[${index}].vehicle.markName`} readOnly/>
